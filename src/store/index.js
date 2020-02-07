@@ -12,18 +12,10 @@ export default new Vuex.Store({
       Username: "",
       Password: ""
     },
-    cart: [
-      {
-        Product_id: 2,
-        Product_name: "test",
-        Picture_url: "testURL",
-        Price: 54,
-        User_Owner_id: 24
-      }
-    ]
+    cart: []
   },
   mutations: {
-    // USERS
+    /* USERS */
     addUser(state, user) {
       state.user = user;
     },
@@ -31,9 +23,20 @@ export default new Vuex.Store({
       state.user = null;
     },
 
-    // PRODUCTS
+    /* PRODUCTS */
     addProductToCart(state, product) {
-      state.cart.push(product);
+      if (product != null) {
+        const productIndex = state.cart.indexOf(product);
+        if (productIndex !== -1) {
+          //state.cart[productIndex].quantity
+        }
+        state.cart.push(product);
+      }
+    },
+    addProductsToCart(state, products) {
+      for (let i = 0; i < products.length; i++) {
+        state.cart.push(products[i]);
+      }
     },
     deleteProductFromCart(state, product) {
       state.cart.filter(p => p !== product);

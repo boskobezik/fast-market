@@ -1,12 +1,6 @@
 <template>
   <div class="row row-centered mt-5">
     <b-form @submit="onSubmit" @reset="onReset">
-      <!-- Product selection with button to add to list -->
-      <!-- https://bootstrap-vue.js.org/docs/components/form-input#datalist-support -->
-      <!-- Quantity -->
-      <!-- User id will be taken from currently logged in user -->
-      <!-- Order id is generated in the DB -->
-
       <!-- Product Selection -->
       <b-form-group
         id="product_name_group"
@@ -34,13 +28,13 @@
       >
         <b-form-input
           id="product_quantity"
-          v-model="form.product_quantity"
+          v-model="form.product_quantity_offset"
           required
           placeholder="Enter product name"
         ></b-form-input>
       </b-form-group>
 
-      <!-- SUBMIT FORM -->
+      <!-- ADD TO CART -->
       <b-button
         variant="primary"
         style="margin-right:5px;"
@@ -49,21 +43,31 @@
       >
       <b-button type="reset" variant="danger">Reset</b-button>
 
-      <b-table
-        class="mt-5"
-        striped
-        hover
-        :items="this.$store.state.cart"
-        :fields="[
-          'Product_id',
-          'Product_name',
-          'Picture_url',
-          'Price',
-          'User_Owner_id',
-          'Quantity'
-        ]"
-      >
-      </b-table>
+      <table>
+        <thead>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Image</th>
+          <th scope="col">Price</th>
+          <th scope="col">Owner</th>
+          <th scope="col">Quantity</th>
+          <th scope="col"></th>
+        </thead>
+        <tbody v-for="product in this.form.products" :key="product.Product_id">
+          <tr>
+            <th scope="row">{{ product.Product_id }}</th>
+            <th>{{ product.Product_name }}</th>
+            <th><img :src="product.Picture_url" width="32" height="32" /></th>
+            <th>{{ product.Price }}</th>
+            <th>{{ product.User_Owner_id }}</th>
+            <th>
+              {{ product.quantity == null ? 0 : product.quantity }}
+            </th>
+            <th><button class="btn-warning">Edit</button></th>
+            <th><button class="btn-danger">Delete</button></th>
+          </tr>
+        </tbody>
+      </table>
     </b-form>
   </div>
 </template>
@@ -76,11 +80,27 @@ export default {
   mounted() {
     // GET SOME PRODUCTS FROM DATABASE
     httpService
-      .get(`${Global.apiurl}products/get`)
+      .get(`${Global.apiurl}api/products/get`)
       .then(res => {
-        this.form.products = res.data;
-        this.form.productNames = this.form.products.map(p => p.Product_name);
-        console.log(this.form.productNames);
+        if (res.data.length !== 0) {
+          res.data.map(p => {
+            this.form.products.push({
+              product: p,
+              quantity: 0
+            });
+          });
+
+          //this.$store.commit("addProductsToCart", res.data);
+          //this.form.products = res.data;
+          // this.form.products.forEach(p => {
+          //   this.form.productQuantities.set(p.Product_id, 0);
+          // });
+          this.form.productNames = this.$store.state.cart.map(
+            p => p.Product_name
+          );
+        } else {
+          console.warn("NO PRODUCTS");
+        }
       })
       .catch(err => console.log(err));
   },
@@ -90,20 +110,22 @@ export default {
         order_id: null,
         user_id: null,
         selectedProduct: null,
-        product_quantity: 0,
+        product_quantity_offset: 0,
         products: [],
         productNames: []
       }
     };
   },
   methods: {
-    onAddToCart() {
-      this.$store.commit("addProductToCart", this.selectedProduct);
-      console.log("CART: ", this.$store.state.cart);
-    },
+    onDeleteProduct() {},
+    onAddToCart() {},
     productSelected(arg) {
       this.form.selectedProduct = this.form.products.find(
         p => p.Product_name === arg
+      );
+      console.log(
+        "line 137 - this.form.selectedProduct: ",
+        this.form.selectedProduct
       );
     },
     onSubmit(evt) {

@@ -99,7 +99,7 @@ export default {
       };
       console.warn("SENDING PAYLOAD", payload);
       httpService
-        .post(`${Global.apiurl}products/add`, payload)
+        .post(`${Global.apiurl}api/products/add`, payload)
         .then(res => console.log(res))
         .catch(err => console.error(err));
     },
