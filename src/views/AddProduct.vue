@@ -100,8 +100,8 @@ export default {
       console.warn("SENDING PAYLOAD", payload);
       httpService
         .post(`${Global.apiurl}api/products/add`, payload)
-        .then(res => console.log(res))
-        .catch(err => console.error(err));
+        .then(console.log)
+        .catch(console.error);
     },
     onReset(evt) {
       evt.preventDefault();
