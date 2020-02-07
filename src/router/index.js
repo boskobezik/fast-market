@@ -5,6 +5,7 @@ import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
 import AddOrder from "../views/AddOrder.vue";
 import Profile from "../views/Profile.vue";
+import Products from "../views/Products.vue";
 import cookieService from "../services/cookieService";
 
 Vue.use(VueRouter);
@@ -34,6 +35,11 @@ const routes = [
     path: "/addorder",
     name: "addorder",
     component: AddOrder
+  },
+  {
+    path: "/",
+    name: "products",
+    component: Products
   }
 ];
 

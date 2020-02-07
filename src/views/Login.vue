@@ -45,7 +45,6 @@ import * as Global from "../Global";
 
 export default {
   name: "Login",
-  components: {},
   data() {
     return {
       loginFailedMessage: null,
@@ -53,7 +52,8 @@ export default {
         username: "",
         password: "",
         rememberMe: false
-      }
+      },
+      product: null
     };
   },
   methods: {
